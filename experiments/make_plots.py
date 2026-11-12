@@ -57,4 +57,16 @@ if os.path.exists(p):
     plt.xlabel("angle scale factor"); plt.title("E5: kernel concentration")
     plt.legend(); plt.grid(alpha=.3); plt.tight_layout()
     plt.savefig(os.path.join(F, "E5_kernel_concentration.png"), dpi=200); plt.close()
+# E8: tuned comparison, F1 by setting and model
+p = os.path.join(R, "E8.csv")
+if os.path.exists(p):
+    d = pd.read_csv(p)
+    d["setting"] = d.fmap + " " + d.k.astype(str) + "q"
+    g = d.groupby(["setting", "model"])["f1"].agg(["mean", "std"]).reset_index()
+    pv, ps = g.pivot(index="setting", columns="model", values="mean"), g.pivot(index="setting", columns="model", values="std")
+    pv.plot(kind="bar", yerr=ps, figsize=(8, 3.8), capsize=2)
+    plt.ylabel("F1"); plt.title("E8: tuned comparison (CV on training data only)"); plt.xticks(rotation=0)
+    plt.legend(loc="upper center", bbox_to_anchor=(0.5, -0.2), ncol=4, fontsize=8)
+    plt.grid(axis="y", alpha=.3); plt.tight_layout()
+    plt.savefig(os.path.join(F, "E8_tuned.png"), dpi=200, bbox_inches="tight"); plt.close()
 print("figures written to", F)
